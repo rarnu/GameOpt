@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
+import com.bn.gameopt.android.api.API;
 import com.bn.gameopt.android.classes.GameListItem;
 
 public class GameListLoader extends AsyncTaskLoader<List<GameListItem>> {
@@ -15,7 +16,7 @@ public class GameListLoader extends AsyncTaskLoader<List<GameListItem>> {
 
 	@Override
 	public List<GameListItem> loadInBackground() {
-		return null;
+		return API.getGames(getContext());
 	}
 
 	@Override

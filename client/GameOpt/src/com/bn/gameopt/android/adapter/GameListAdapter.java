@@ -12,15 +12,24 @@ import android.widget.TextView;
 
 import com.bn.gameopt.android.R;
 import com.bn.gameopt.android.classes.GameListItem;
+import com.rarnu.utils.UIUtils;
 
 public class GameListAdapter extends BaseAdapter {
 
 	private List<GameListItem> list = null;
 	private LayoutInflater inflater = null;
+	private int gridSize = 0;
 
-	public GameListAdapter(Context context, List<GameListItem> list) {
+	public GameListAdapter(Context context, List<GameListItem> list,
+			int gridSize) {
 		inflater = LayoutInflater.from(context);
 		this.list = list;
+		this.gridSize = gridSize;
+	}
+
+	public void setNewList(List<GameListItem> list) {
+		this.list = list;
+		this.notifyDataSetChanged();
 	}
 
 	@Override
@@ -44,6 +53,8 @@ public class GameListAdapter extends BaseAdapter {
 		if (v == null) {
 			v = inflater.inflate(R.layout.item_am_games, parent, false);
 		}
+		UIUtils.setViewSizeX(v, gridSize);
+		UIUtils.setViewSizeY(v, gridSize);
 		GameItemHolder holder = (GameItemHolder) v.getTag();
 		if (holder == null) {
 			holder = new GameItemHolder();

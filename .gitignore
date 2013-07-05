@@ -24,4 +24,5 @@ local.properties
 # extra files
 eclimd.log
 *.swp
+*~
 
