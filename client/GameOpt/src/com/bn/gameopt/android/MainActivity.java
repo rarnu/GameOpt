@@ -13,6 +13,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import com.bn.gameopt.android.adapter.GameListAdapter;
+import com.bn.gameopt.android.api.API;
 import com.bn.gameopt.android.classes.GameListItem;
 import com.bn.gameopt.android.loader.GameListLoader;
 import com.rarnu.command.RootUtils;
@@ -42,10 +43,14 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		loaderGames = new GameListLoader(this);
 		loaderGames.registerListener(0, this);
 		loaderGames.startLoading();
+
+		loadProtectedListT();
+		startService(new Intent(this, CleanService.class));
 	}
 
 	@Override
 	protected void onDestroy() {
+		stopService(new Intent(this, CleanService.class));
 		Global.release();
 		super.onDestroy();
 	}
@@ -65,5 +70,15 @@ public class MainActivity extends Activity implements OnItemClickListener,
 			Global.listGames.addAll(data);
 			adapterGames.setNewList(Global.listGames);
 		}
+	}
+
+	private void loadProtectedListT() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Global.listIgnorePackages = API
+						.getProtectedPackages(MainActivity.this);
+			}
+		}).start();
 	}
 }
