@@ -71,7 +71,9 @@ public class API {
 		if (list != null && list.size() != 0) {
 			listRet = new ArrayList<GameListItem>();
 			for (int i = 0; i < list.size(); i++) {
-				addItemToList(listRet, list.get(i));
+				if (list.get(i).installed) {
+					addItemToList(listRet, list.get(i));
+				}
 			}
 		}
 		return listRet;

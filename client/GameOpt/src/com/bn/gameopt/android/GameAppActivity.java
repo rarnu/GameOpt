@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,8 @@ import android.widget.GridView;
 import com.bn.gameopt.android.adapter.GameAppAdapter;
 import com.bn.gameopt.android.classes.GameItem;
 import com.bn.gameopt.android.classes.GameListItem;
+import com.bn.gameopt.android.utils.GameOptUtils;
+import com.bn.gameopt.android.utils.SystemUtils;
 import com.rarnu.utils.UIUtils;
 
 public class GameAppActivity extends Activity implements OnItemClickListener {
@@ -40,11 +43,20 @@ public class GameAppActivity extends Activity implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		finish();
-		GameItem item = listGameApps.get(position);
+
+		final GameItem item = listGameApps.get(position);
 		new AlertDialog.Builder(this).setTitle(item.name)
-				.setMessage(item.packageName).setPositiveButton("OK", null)
-				.show();
+				.setMessage(item.packageName)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						GameOptUtils.cleanAll(GameAppActivity.this);
+						finish();
+						SystemUtils.openApp(GameAppActivity.this,
+								item.packageName);
+					}
+				}).setNegativeButton("Cancel", null).show();
 
 	}
 }

@@ -3,6 +3,7 @@ package com.bn.gameopt.android.utils;
 import java.util.List;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 
 import com.bn.gameopt.android.Global;
 import com.bn.gameopt.android.classes.ProcessInfo;
@@ -21,28 +22,41 @@ public class GameOptUtils {
 		return 0;
 	}
 
-	public static void killBackgroundServices(Context context) {
+	public static void killBackgroundServices(final Context context) {
 		// killBackgroundServices
-		List<ProcessInfo> list = SystemUtils.getRunningAppProcessInfo(context);
-		boolean ignoreKill = false;
-		for (ProcessInfo pi : list) {
-			ignoreKill = false;
-			if (pi.pkgNames != null && pi.pkgNames.length != 0) {
-				for (String pkg : pi.pkgNames) {
-					if (Global.listIgnorePackages.indexOf(pkg) != -1) {
-						ignoreKill = true;
-						break;
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				PackageManager pm = context.getPackageManager();
+				boolean isSystemSigned = (pm.checkSignatures(
+						context.getPackageName(), "com.android.settings") == PackageManager.SIGNATURE_MATCH);
+				List<ProcessInfo> list = SystemUtils
+						.getRunningAppProcessInfo(context);
+				boolean ignoreKill = false;
+				for (ProcessInfo pi : list) {
+					ignoreKill = false;
+					if (pi.pkgNames != null && pi.pkgNames.length != 0) {
+						for (String pkg : pi.pkgNames) {
+							if (Global.listIgnorePackages.indexOf(pkg) != -1) {
+								ignoreKill = true;
+								break;
+							}
+						}
+					}
+					if (!ignoreKill) {
+						if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
+							SystemUtils.rootKillProcess(pi.pid);
+						} else if (isSystemSigned) {
+							SystemUtils.systemkillProcess(context, pi.pkgNames);
+						} else {
+							SystemUtils.killProcess(context, pi.pkgNames);
+						}
 					}
 				}
 			}
-			if (!ignoreKill) {
-				if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
-					SystemUtils.rootKillProcess(pi.pid);
-				} else {
-					SystemUtils.killProcess(context, pi.pkgNames);
-				}
-			}
-		}
+		}).start();
+
 	}
 
 	public static void cleanMemory() {
