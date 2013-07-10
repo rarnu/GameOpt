@@ -12,6 +12,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.os.Debug;
 
+import com.bn.gameopt.android.Global;
 import com.bn.gameopt.android.classes.MemoryInfo;
 import com.bn.gameopt.android.classes.ProcessInfo;
 import com.rarnu.command.RootUtils;
@@ -31,15 +32,19 @@ public class SystemUtils {
 				.getRunningAppProcesses();
 
 		for (ActivityManager.RunningAppProcessInfo appProcessInfo : appProcessList) {
-			int pid = appProcessInfo.pid;
-			int uid = appProcessInfo.uid;
-			String processName = appProcessInfo.processName;
-			int[] myMempid = new int[] { pid };
-			Debug.MemoryInfo[] memoryInfo = am.getProcessMemoryInfo(myMempid);
-			int memSize = memoryInfo[0].dalvikPrivateDirty;
-			ProcessInfo processInfo = new ProcessInfo(pid, uid, memSize,
-					processName, appProcessInfo.pkgList);
-			processInfoList.add(processInfo);
+			// check the importance
+			if (appProcessInfo.importance >= ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE) {
+				int pid = appProcessInfo.pid;
+				int uid = appProcessInfo.uid;
+				String processName = appProcessInfo.processName;
+				int[] myMempid = new int[] { pid };
+				Debug.MemoryInfo[] memoryInfo = am
+						.getProcessMemoryInfo(myMempid);
+				int memSize = memoryInfo[0].dalvikPrivateDirty;
+				ProcessInfo processInfo = new ProcessInfo(pid, uid, memSize,
+						processName, appProcessInfo.pkgList);
+				processInfoList.add(processInfo);
+			}
 		}
 		return processInfoList;
 	}
@@ -49,7 +54,9 @@ public class SystemUtils {
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		if (pkgNames != null && pkgNames.length != 0) {
 			for (String pkg : pkgNames) {
-				am.killBackgroundProcesses(pkg);
+				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)) {
+					am.killBackgroundProcesses(pkg);
+				}
 			}
 		}
 	}
@@ -59,14 +66,28 @@ public class SystemUtils {
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		if (pkgNames != null && pkgNames.length != 0) {
 			for (String pkg : pkgNames) {
-				am.forceStopPackage(pkg);
+				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)) {
+					am.forceStopPackage(pkg);
+				}
 			}
 		}
 
 	}
 
-	public static void rootKillProcess(int pid) {
-		RootUtils.runCommand(String.format("kill %d", pid), true, null);
+	public static void rootKillProcess(int pid, String[] pkgNames) {
+		boolean canKill = true;
+
+		if (pkgNames != null && pkgNames.length != 0) {
+			for (String pkg : pkgNames) {
+				if (pkg.equals(Global.CURRENT_GAME_PACKAGE_NAME)) {
+					canKill = false;
+					break;
+				}
+			}
+		}
+		if (canKill) {
+			RootUtils.runCommand(String.format("kill %d", pid), true, null);
+		}
 	}
 
 	public static void rootDropCache() {
@@ -103,7 +124,8 @@ public class SystemUtils {
 		resolveIntent.setPackage(pi.packageName);
 
 		List<ResolveInfo> apps = context.getPackageManager()
-				.queryIntentActivities(resolveIntent, 0);
+
+		.queryIntentActivities(resolveIntent, 0);
 
 		ResolveInfo ri = apps.iterator().next();
 		if (ri != null) {

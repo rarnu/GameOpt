@@ -45,12 +45,16 @@ public class GameOptUtils {
 						}
 					}
 					if (!ignoreKill) {
-						if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
-							SystemUtils.rootKillProcess(pi.pid);
-						} else if (isSystemSigned) {
-							SystemUtils.systemkillProcess(context, pi.pkgNames);
-						} else {
-							SystemUtils.killProcess(context, pi.pkgNames);
+						if (pi.pid > 1024) { // protect the system processes
+							if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
+								SystemUtils
+										.rootKillProcess(pi.pid, pi.pkgNames);
+							} else if (isSystemSigned) {
+								SystemUtils.systemkillProcess(context,
+										pi.pkgNames);
+							} else {
+								SystemUtils.killProcess(context, pi.pkgNames);
+							}
 						}
 					}
 				}
