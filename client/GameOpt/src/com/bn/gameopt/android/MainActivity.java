@@ -32,6 +32,10 @@ public class MainActivity extends Activity implements OnItemClickListener,
 		RootUtils.init(this);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		if (RootUtils.hasRoot() >= RootUtils.LEVEL_HALF_ROOTED) {
+			RootUtils.mountRW();
+		}
 
 		gvGames = (GridView) findViewById(R.id.gvGames);
 		gvGames.setOnItemClickListener(this);

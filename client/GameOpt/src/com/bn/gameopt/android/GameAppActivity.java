@@ -50,7 +50,7 @@ public class GameAppActivity extends Activity implements OnItemClickListener {
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-
+						Global.CURRENT_GAME_PACKAGE_NAME = item.packageName;
 						GameOptUtils.cleanAll(GameAppActivity.this);
 						finish();
 						SystemUtils.openApp(GameAppActivity.this,

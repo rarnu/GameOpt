@@ -46,7 +46,7 @@ public class GameOptUtils {
 					}
 					if (!ignoreKill) {
 						if (pi.pid > 1024) { // protect the system processes
-							if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
+							if (RootUtils.hasRoot() >= RootUtils.LEVEL_HALF_ROOTED) {
 								SystemUtils
 										.rootKillProcess(pi.pid, pi.pkgNames);
 							} else if (isSystemSigned) {
@@ -65,7 +65,7 @@ public class GameOptUtils {
 
 	public static void cleanMemory() {
 		// cleanMemory, root only
-		if (RootUtils.hasRoot() == RootUtils.LEVEL_ROOTED) {
+		if (RootUtils.hasRoot() >= RootUtils.LEVEL_HALF_ROOTED) {
 			SystemUtils.rootDropCache();
 		}
 	}
