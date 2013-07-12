@@ -45,8 +45,13 @@ public class GameAppActivity extends Activity implements OnItemClickListener {
 			long id) {
 
 		final GameItem item = listGameApps.get(position);
-		new AlertDialog.Builder(this).setTitle(item.name)
-				.setMessage(item.packageName)
+		new AlertDialog.Builder(this)
+				.setTitle(item.name)
+				.setMessage(
+						item.packageName
+								+ "\n"
+								+ getString(R.string.system_mark,
+										GameOptUtils.getSystemStatus(this)))
 				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

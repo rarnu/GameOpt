@@ -31,8 +31,9 @@
             android:name=".GameAppActivity"
             android:theme="@android:style/Theme.Holo.Dialog" >
         </activity>
-        <activity android:name=".CleanService" >
-        </activity>
+
+        <service android:name=".CleanService" >
+        </service>
     </application>
 
 </manifest>

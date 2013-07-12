@@ -54,7 +54,8 @@ public class SystemUtils {
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		if (pkgNames != null && pkgNames.length != 0) {
 			for (String pkg : pkgNames) {
-				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)) {
+				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)
+						&& (!pkg.contains(context.getPackageName()))) {
 					am.killBackgroundProcesses(pkg);
 				}
 			}
@@ -66,7 +67,8 @@ public class SystemUtils {
 				.getSystemService(Context.ACTIVITY_SERVICE);
 		if (pkgNames != null && pkgNames.length != 0) {
 			for (String pkg : pkgNames) {
-				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)) {
+				if (!pkg.contains(Global.CURRENT_GAME_PACKAGE_NAME)
+						&& (!pkg.contains(context.getPackageName()))) {
 					am.forceStopPackage(pkg);
 				}
 			}
@@ -74,12 +76,12 @@ public class SystemUtils {
 
 	}
 
-	public static void rootKillProcess(int pid, String[] pkgNames) {
+	public static void rootKillProcess(Context context, int pid, String[] pkgNames) {
 		boolean canKill = true;
 
 		if (pkgNames != null && pkgNames.length != 0) {
 			for (String pkg : pkgNames) {
-				if (pkg.equals(Global.CURRENT_GAME_PACKAGE_NAME)) {
+				if (pkg.equals(Global.CURRENT_GAME_PACKAGE_NAME)&& (!pkg.contains(context.getPackageName()))) {
 					canKill = false;
 					break;
 				}

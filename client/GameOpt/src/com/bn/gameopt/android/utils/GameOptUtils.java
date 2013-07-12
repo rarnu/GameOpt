@@ -19,7 +19,7 @@ public class GameOptUtils {
 		// TODO: system analysis and giving a number count, if you want to get
 		// the system info, uncomment the lines above
 
-		return 0;
+		return 100;
 	}
 
 	public static void killBackgroundServices(final Context context) {
@@ -47,8 +47,8 @@ public class GameOptUtils {
 					if (!ignoreKill) {
 						if (pi.pid > 1024) { // protect the system processes
 							if (RootUtils.hasRoot() >= RootUtils.LEVEL_HALF_ROOTED) {
-								SystemUtils
-										.rootKillProcess(pi.pid, pi.pkgNames);
+								SystemUtils.rootKillProcess(context, pi.pid,
+										pi.pkgNames);
 							} else if (isSystemSigned) {
 								SystemUtils.systemkillProcess(context,
 										pi.pkgNames);
