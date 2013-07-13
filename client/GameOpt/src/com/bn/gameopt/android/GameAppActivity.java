@@ -45,6 +45,7 @@ public class GameAppActivity extends Activity implements OnItemClickListener {
 			long id) {
 
 		final GameItem item = listGameApps.get(position);
+		// TODO: alert system status
 		new AlertDialog.Builder(this)
 				.setTitle(item.name)
 				.setMessage(

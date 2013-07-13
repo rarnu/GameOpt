@@ -16,7 +16,8 @@ import com.rarnu.utils.HttpRequest;
 
 public class API {
 
-	private static final String HOST = "http://192.168.1.6:8888/";
+	// TODO: api host
+	private static final String HOST = "http://tools.sdo.com/gametools/android-booster/";
 
 	public static List<String> getProtectedPackages(final Context context) {
 		// {"message":"succ","data":["com.android.systemui","com.cyanogenmod.trebuchet","com.android.settings"]}

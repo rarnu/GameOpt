@@ -38,7 +38,7 @@ public class CleanService extends Service {
 					}
 					GameOptUtils.cleanAll(getApplicationContext());
 					try {
-						// sleep 10 minutes
+						// TODO: sleep time
 						Thread.sleep(600000);
 					} catch (InterruptedException e) {
 					}
